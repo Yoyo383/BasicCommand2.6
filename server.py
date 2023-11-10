@@ -5,9 +5,22 @@ import random
 QUEUE_LEN = 1
 REQUEST_LEN = 4
 SERVER_NAME = 'the yoyo server'
-
 IP = '127.0.0.1'
 PORT = 8000
+
+
+def return_time():
+    now = datetime.now()
+    # return str(now.hour).zfill(2) + ':' + str(now.minute).zfill(2) + ':' + str(now.second).zfill(2)
+    return str(now).split('.')[0]
+
+
+def return_name():
+    return SERVER_NAME
+
+
+def return_rand():
+    return str(random.randint(1, 10))
 
 
 def request_to_response(request):
@@ -19,14 +32,13 @@ def request_to_response(request):
     :rtype: str
     """
     if request == 'TIME':
-        now = datetime.now()
-        return str(now.hour).zfill(2) + ':' + str(now.minute).zfill(2) + ':' + str(now.second).zfill(2)
+        return return_time()
 
     elif request == 'NAME':
-        return SERVER_NAME
+        return return_name()
 
     elif request == 'RAND':
-        return str(random.randint(1, 10))
+        return return_rand()
 
     elif request == 'EXIT':
         return 'Exiting.'
@@ -59,15 +71,15 @@ def connect_to_client(server_socket):
     return client_socket
 
 
-def format_response(response):
+def protocolize_content(content):
     """
-    Formats the response with the byte length.
-    :param response: The response.
-    :type response: str
-    :return: The formatted response.
+    Protocolizes the content as the following: the number of bytes, followed by a $ and then the content.
+    :param content: The content.
+    :type content: str
+    :return: The message to send.
     :rtype: str
     """
-    return str(len(response)).zfill(2) + response
+    return str(len(content)) + '$' + content
 
 
 def main_loop(client_socket):
@@ -78,21 +90,20 @@ def main_loop(client_socket):
     :type client_socket: socket.socket
     :return: None.
     """
-    while True:
-        request = client_socket.recv(REQUEST_LEN).decode()
+    req = ''
+    while req != 'EXIT':
+        req = client_socket.recv(REQUEST_LEN).decode()
 
-        response = request_to_response(request)
-        response = format_response(response)
+        response = request_to_response(req)
+        message = protocolize_content(response)
 
-        client_socket.send(response.encode())
+        client_socket.send(message.encode())
 
-        if 'Exiting.' in response:
-            client_socket.close()
-            print('Client disconnected.')
-            break
+    client_socket.close()
+    print('Client disconnected.')
 
 
-def client_socket_loop(server_socket):
+def connect_client_loop(server_socket):
     """
     The server waits for a client and does the main loop. When the client disconnects, the server waits for another one.
     :param server_socket: The server socket.
@@ -107,7 +118,7 @@ def client_socket_loop(server_socket):
             main_loop(client_socket)
 
         except socket.error as err:
-            print('client socket error: ' + str(err))
+            print('Client socket error: ' + str(err))
 
         finally:
             client_socket.close()
@@ -122,10 +133,10 @@ def main():
 
     try:
         connect_socket(server_socket)
-        client_socket_loop(server_socket)
+        connect_client_loop(server_socket)
 
     except socket.error as err:
-        print('server socket error: ' + str(err))
+        print('Server socket error: ' + str(err))
 
     finally:
         server_socket.close()
