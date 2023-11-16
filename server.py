@@ -10,17 +10,32 @@ PORT = 8000
 
 
 def return_time():
+    """
+    Returns current date and time without milliseconds.
+    :return: Current date and time without milliseconds.
+    :rtype: str
+    """
     now = datetime.now()
     # return str(now.hour).zfill(2) + ':' + str(now.minute).zfill(2) + ':' + str(now.second).zfill(2)
     return str(now).split('.')[0]
 
 
 def return_name():
+    """
+    Returns the server name.
+    :return: The server name.
+    :rtype: str
+    """
     return SERVER_NAME
 
 
 def return_rand():
-    return str(random.randint(1, 10))
+    """
+    Returns a random number between 1 and 10.
+    :return: A random number between 1 and 10.
+    :rtype: int
+    """
+    return random.randint(1, 10)
 
 
 def request_to_response(request):
@@ -38,7 +53,7 @@ def request_to_response(request):
         return return_name()
 
     elif request == 'RAND':
-        return return_rand()
+        return str(return_rand())
 
     elif request == 'EXIT':
         return 'Exiting.'
