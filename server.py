@@ -1,3 +1,8 @@
+"""
+Author: Yoad Winter
+Date: 16.11.2023
+Description: The server for exercise 2.6.
+"""
 import socket
 from datetime import datetime
 import random
