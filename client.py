@@ -4,6 +4,8 @@ IP = '127.0.0.1'
 PORT = 8000
 COMMANDS = ['TIME', 'NAME', 'RAND', 'EXIT']
 
+SERVER_CLOSED_MSG = 'Server has closed, disconnecting.'
+
 
 def get_response(server_socket):
     """
@@ -23,6 +25,17 @@ def get_response(server_socket):
     return server_socket.recv(count).decode()
 
 
+def is_cmd_valid(cmd):
+    """
+    Checks if the entered command is valid.
+    :param cmd: The command.
+    :type cmd: str
+    :return: Whether the command is valid.
+    :rtype: bool
+    """
+    return cmd in COMMANDS
+
+
 def main_loop(server_socket):
     """
     The user enters a command, if it's valid the client sends it and gets the response, then prints the response. If
@@ -36,12 +49,12 @@ def main_loop(server_socket):
         print('Enter one of the following commands: TIME | NAME | RAND | EXIT')
         req = input('> ')
 
-        if len(req) == 4 and req in COMMANDS:
+        if is_cmd_valid(req):
             server_socket.send(req.encode())
 
             response = get_response(server_socket)
             print(response)
-            if response == 'Server has closed, disconnecting.':
+            if response == SERVER_CLOSED_MSG:
                 break
         else:
             print('Invalid command.')
@@ -69,4 +82,9 @@ def main():
 
 
 if __name__ == '__main__':
+    assert is_cmd_valid('TIME')
+    assert is_cmd_valid('RAND')
+    assert is_cmd_valid('NAME')
+    assert is_cmd_valid('EXIT')
+    assert not is_cmd_valid('I HAVE THE HIGH GROUND')
     main()

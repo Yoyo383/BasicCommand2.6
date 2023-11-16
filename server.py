@@ -8,6 +8,8 @@ SERVER_NAME = 'the yoyo server'
 IP = '127.0.0.1'
 PORT = 8000
 
+SERVER_CLOSED_MSG = 'Server has closed, disconnecting.'
+
 
 def return_time():
     """
@@ -16,7 +18,6 @@ def return_time():
     :rtype: str
     """
     now = datetime.now()
-    # return str(now.hour).zfill(2) + ':' + str(now.minute).zfill(2) + ':' + str(now.second).zfill(2)
     return str(now).split('.')[0]
 
 
@@ -59,6 +60,7 @@ def request_to_response(request):
         return 'Exiting.'
 
     else:
+        # not used anywhere because the input is valid (checked in client) but i still wanted to return something.
         return 'Invalid command.'
 
 
@@ -137,7 +139,7 @@ def connect_client_loop(server_socket):
 
         except KeyboardInterrupt:
             print('Keyboard interrupt detected, exiting.')
-            client_socket.send(protocolize_content('Server has closed, disconnecting.').encode())
+            client_socket.send(protocolize_content(SERVER_CLOSED_MSG).encode())
             client_socket.close()
             break
 
@@ -167,4 +169,10 @@ def main():
 
 
 if __name__ == '__main__':
+    for i in range(20):
+        assert 1 <= return_rand() <= 10
+    assert return_name() == SERVER_NAME
+    assert request_to_response('NAME') == SERVER_NAME
+    assert request_to_response('EXIT') == 'Exiting.'
+    assert protocolize_content('Do. Or do not. There is no try.') == '31$Do. Or do not. There is no try.'
     main()
