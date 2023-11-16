@@ -120,6 +120,12 @@ def connect_client_loop(server_socket):
         except socket.error as err:
             print('Client socket error: ' + str(err))
 
+        except KeyboardInterrupt:
+            print('Keyboard interrupt detected, exiting.')
+            client_socket.send(protocolize_content('Server has closed, disconnecting.').encode())
+            client_socket.close()
+            break
+
         finally:
             client_socket.close()
 
@@ -137,6 +143,9 @@ def main():
 
     except socket.error as err:
         print('Server socket error: ' + str(err))
+
+    except KeyboardInterrupt:
+        print('Keyboard interrupt detected, exiting.')
 
     finally:
         server_socket.close()

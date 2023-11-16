@@ -41,6 +41,8 @@ def main_loop(server_socket):
 
             response = get_response(server_socket)
             print(response)
+            if response == 'Server has closed, disconnecting.':
+                break
         else:
             print('Invalid command.')
 
