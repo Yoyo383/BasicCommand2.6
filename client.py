@@ -59,7 +59,7 @@ def main_loop(server_socket):
     req = ''
     while req != 'EXIT':
         print('Enter one of the following commands: TIME | NAME | RAND | EXIT')
-        req = input('> ')
+        req = input('ENTER COMMAND> ')
 
         if is_cmd_valid(req):
             server_socket.send(req.encode())
