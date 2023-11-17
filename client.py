@@ -87,6 +87,7 @@ def main():
     try:
         server_socket.connect((IP, PORT))
         logging.debug('Socket connected to server.')
+        print('Connected to server!')
         main_loop(server_socket)
 
     except socket.error as err:

@@ -25,12 +25,12 @@ LOG_FILE = LOG_DIR + '/server.log'
 
 def return_time():
     """
-    Returns current date and time without milliseconds.
-    :return: Current date and time without milliseconds.
+    Returns current date and time.
+    :return: Current date and time.
     :rtype: str
     """
     now = datetime.now()
-    return str(now).split('.')[0]
+    return now.strftime("%m/%d/%Y, %H:%M:%S")
 
 
 def return_name():
