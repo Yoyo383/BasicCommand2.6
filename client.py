@@ -58,8 +58,7 @@ def main_loop(server_socket):
     """
     req = ''
     while req != 'EXIT':
-        print('Enter one of the following commands: TIME | NAME | RAND | EXIT')
-        req = input('ENTER COMMAND> ')
+        req = input('ENTER COMMAND: ')
 
         if is_cmd_valid(req):
             server_socket.send(req.encode())
@@ -73,7 +72,7 @@ def main_loop(server_socket):
                 break
         else:
             logging.warning(f'Client entered invalid command: {req}')
-            print('Invalid command.')
+            print('Invalid command! Enter one of the following commands: TIME | NAME | RAND | EXIT')
 
 
 def main():

@@ -4,7 +4,7 @@ Date: 16.11.2023
 Description: The server for exercise 2.6.
 """
 import socket
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
 import os
 import logging
@@ -16,6 +16,8 @@ IP = '127.0.0.1'
 PORT = 8000
 
 SERVER_CLOSED_MSG = 'Server has closed, disconnecting.'
+
+TIME_FORMAT = '%d.%m.%Y, %H:%M:%S'
 
 LOG_FORMAT = '[%(levelname)s | %(asctime)s | %(processName)s] %(message)s'
 LOG_LEVEL = logging.DEBUG
@@ -30,7 +32,7 @@ def return_time():
     :rtype: str
     """
     now = datetime.now()
-    return now.strftime("%m/%d/%Y, %H:%M:%S")
+    return now.strftime(TIME_FORMAT)
 
 
 def return_name():
@@ -203,6 +205,9 @@ if __name__ == '__main__':
     for i in range(20):
         assert 1 <= return_rand() <= 10
     assert return_name() == SERVER_NAME
+    # Checks if the time returned by return_time() is at most 1 second before the current time (to see if it returns
+    # the correct time).
+    assert datetime.strptime(return_time(), TIME_FORMAT) - datetime.now() <= timedelta(seconds=1)
     assert request_to_response('NAME') == SERVER_NAME
     assert request_to_response('EXIT') == 'Exiting.'
     assert protocolize_content('Do. Or do not. There is no try.') == '31$Do. Or do not. There is no try.'
